@@ -1,0 +1,49 @@
+?   	lab1/cmd/ping	[no test files]
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/empty_method
+=== RUN   TestValidateRequest/space_in_method
+=== RUN   TestValidateRequest/control_character
+=== RUN   TestValidateRequest/too_many_arguments
+=== RUN   TestValidateRequest/large_argument
+=== RUN   TestValidateRequest/large_request
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/empty_method (0.00s)
+    --- PASS: TestValidateRequest/space_in_method (0.00s)
+    --- PASS: TestValidateRequest/control_character (0.00s)
+    --- PASS: TestValidateRequest/too_many_arguments (0.00s)
+    --- PASS: TestValidateRequest/large_argument (0.00s)
+    --- PASS: TestValidateRequest/large_request (0.00s)
+=== RUN   TestServerClient
+--- PASS: TestServerClient (0.00s)
+=== RUN   TestServerClientMethodShapes
+--- PASS: TestServerClientMethodShapes (0.00s)
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/unknown_method
+=== RUN   TestInvalidRemoteCallsBecomeErrors/wrong_argument_count
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_output_type
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/unknown_method (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/wrong_argument_count (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_output_type (0.00s)
+=== RUN   TestRemotePanicBecomesError
+--- PASS: TestRemotePanicBecomesError (0.00s)
+=== RUN   TestConcurrentCalls
+--- PASS: TestConcurrentCalls (0.00s)
+=== RUN   TestStopAndRestart
+--- PASS: TestStopAndRestart (0.00s)
+=== RUN   TestServerLifecycleErrors
+--- PASS: TestServerLifecycleErrors (0.00s)
+=== RUN   TestStopWaitsForActiveHandler
+--- PASS: TestStopWaitsForActiveHandler (0.15s)
+=== RUN   TestClientTimeout
+--- PASS: TestClientTimeout (0.15s)
+=== RUN   TestClientConnectionFailures
+--- PASS: TestClientConnectionFailures (0.00s)
+=== RUN   TestMalformedRequestGetsErrorResponse
+--- PASS: TestMalformedRequestGetsErrorResponse (0.00s)
+=== RUN   TestOversizedRequestGetsErrorResponse
+--- PASS: TestOversizedRequestGetsErrorResponse (0.10s)
+PASS
+ok  	lab1/rpc	1.425s

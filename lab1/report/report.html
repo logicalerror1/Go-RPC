@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Lab 1 - Reflection-Based RPC System - Report</title>
+<style>
+@page { size: A4; margin: 17mm 16mm 18mm 16mm;
+  @bottom-center { content: "Page " counter(page) " of " counter(pages);
+                   font-family: "Liberation Sans", Arial, sans-serif;
+                   font-size: 8pt; color: #57606a; }
+  @bottom-right { content: "Lab 1 - Reflection-Based RPC System";
+                  font-family: "Liberation Sans", Arial, sans-serif;
+                  font-size: 8pt; color: #57606a; } }
+body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 10.2pt;
+       color: #1f2328; line-height: 1.42; margin: 0; }
+h1 { font-size: 25pt; color: #0f2a43; margin: 0 0 6pt 0; line-height: 1.15; }
+h2 { font-size: 15.5pt; color: #0f2a43; margin: 18pt 0 7pt 0;
+     border-bottom: 2px solid #1f6feb; padding-bottom: 3pt; }
+h3 { font-size: 12pt; color: #16436b; margin: 13pt 0 4pt 0; }
+h4 { font-size: 10.5pt; color: #1f4e79; margin: 9pt 0 3pt 0; }
+p { margin: 4pt 0; orphans: 3; widows: 3; }
+ul, ol { margin: 4pt 0 6pt 0; padding-left: 18pt; }
+li { margin: 2pt 0; }
+pre { font-family: "Liberation Mono", monospace; font-size: 7.7pt; line-height: 1.28;
+      background: #f6f8fa; border: 1px solid #d0d7de; border-left: 4px solid #1f6feb;
+      padding: 7pt 8pt; margin: 6pt 0 8pt 0; white-space: pre; }
+code { font-family: "Liberation Mono", monospace; font-size: 9pt;
+       background: #eef2f6; padding: 0 2pt; }
+table { width: 100%; border-collapse: collapse; margin: 6pt 0 9pt 0; font-size: 9pt; }
+th { background: #0f2a43; color: #ffffff; text-align: left; padding: 4pt 5pt;
+     border: 1px solid #0f2a43; font-size: 9pt; }
+td { border: 1px solid #c9d1d9; padding: 4pt 5pt; vertical-align: top; }
+tr { break-inside: avoid; page-break-inside: avoid; }
+.note { background: #eef6ff; border-left: 4px solid #1f6feb; padding: 6pt 9pt;
+        margin: 7pt 0; }
+.warn { background: #fff8e6; border-left: 4px solid #d4a72c; padding: 6pt 9pt;
+        margin: 7pt 0; }
+.ok { color: #1a7f37; font-weight: bold; }
+.small { font-size: 8.5pt; color: #57606a; }
+.center { text-align: center; }
+.cover { background: #0f2a43; color: #ffffff; width: 100%; border-collapse: collapse;
+         margin: 0 0 14pt 0; }
+.cover td { border: none; background: #0f2a43; color: #ffffff; padding: 26pt 22pt; }
+.cover h1 { color: #ffffff; font-size: 27pt; }
+.cover .kicker { color: #9ecbff; font-size: 10pt; letter-spacing: 1.2pt;
+                 text-transform: uppercase; margin-bottom: 8pt; }
+.cover .sub { color: #dbeafe; font-size: 13pt; margin-top: 4pt; }
+.newpage { page-break-before: always; }
+.keep { break-inside: avoid; page-break-inside: avoid; }
+.mono { font-family: "Liberation Mono", monospace; }
+.status-pass { color: #1a7f37; font-weight: bold; }
+</style></head><body>
+
+<table class="cover" style="background-color:#0f2a43;width:100%;border-collapse:collapse;margin:0 0 14pt 0;">
+<tr><td bgcolor="#0f2a43" style="background-color:#0f2a43;border:none;padding:26pt 22pt;">
+<div style="color:#9ecbff;font-size:10pt;letter-spacing:1.2pt;text-transform:uppercase;margin-bottom:8pt;">
+<font color="#9ecbff">Alexandria National University &nbsp;|&nbsp; College of Computing</font></div>
+<div style="color:#9ecbff;font-size:10pt;letter-spacing:1.2pt;text-transform:uppercase;margin-bottom:8pt;">
+<font color="#9ecbff">Cyber Security Program &nbsp;|&nbsp; 00304N: Distributed Processing</font></div>
+<h1 style="color:#ffffff;font-size:27pt;margin:0 0 6pt 0;line-height:1.15;">
+<font color="#ffffff">Lab 1: Building a Reflection-Based RPC System</font></h1>
+<div style="color:#dbeafe;font-size:13pt;margin-top:4pt;">
+<font color="#dbeafe">Implementation and Design Report</font></div>
+<div style="color:#bcd7f5;font-size:10.5pt;margin-top:10pt;">
+<font color="#bcd7f5">Go (standard library only) &nbsp;&bull;&nbsp; TCP &nbsp;&bull;&nbsp; JSON &nbsp;&bull;&nbsp; Reflection</font></div>
+</td></tr></table>
+
+<table>
+<tr><td style="width:28%;"><b>Course</b></td><td>00304N: Distributed Processing</td></tr>
+<tr><td><b>Instructor</b></td><td>Dr. Laurine Armeya</td></tr>
+<tr><td><b>Teaching Assistants</b></td><td>Staff Members</td></tr>
+<tr><td><b>Module</b></td><td><span class="mono">lab1</span> (Go 1.20+, verified with Go 1.23.4)</td></tr>
+<tr><td><b>Date</b></td><td>October 20, 2026</td></tr>
+<tr><td><b>Status</b></td><td><span class="status-pass">All tasks implemented; all tests pass</span></td></tr>
+</table>
+
+<h3>Team</h3>
+<table>
+<tr><th style="width:8%;">#</th><th style="width:52%;">Name</th><th>Student ID</th></tr>
+<tr><td>1</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>2</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>3</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+</table>
+
+<table style="width:100%;border-collapse:collapse;margin:7pt 0;"><tr><td bgcolor="#eef6ff" style="background-color:#eef6ff;border:1px solid #d0d7de;border-left:4pt solid #1f6feb;padding:6pt 9pt;">
+<b>Scope of this report.</b> It explains what was built, how each assignment task works,
+why the design choices were made, how the system is used, and how it was verified.
+Every function in <span class="mono">rpc/rpc.go</span> carries an explanatory Go doc comment
+with its purpose and a usage example.
+</td></tr></table>
+
+<h2 class="newpage">1. Executive Summary</h2>
+
+<p>This report documents a complete implementation of the Lab 1 Remote Procedure Call (RPC)
+system. The system lets a client invoke exported methods on a server object over a TCP
+connection using JSON messages, with the server locating and calling the method through
+Go's <span class="mono">reflect</span> package at runtime.</p>
+
+<p>The assignment template already contained the wire types, the reflection bridge skeleton,
+the client constructor, and the test suite. The required work was concentrated in seven
+functions: <span class="mono">Server.Start</span>, <span class="mono">Server.Address</span>,
+<span class="mono">Server.Stop</span>, <span class="mono">validateRequest</span>,
+<span class="mono">Server.handle</span>, <span class="mono">Server.invoke</span>, and
+<span class="mono">Client.Call</span>. All seven are implemented without changing any
+existing function signature or JSON field name, and all original TODO comments are preserved.</p>
+
+<h4>Results at a glance</h4>
+<ul>
+<li><span class="status-pass">13/13</span> top-level tests pass (23 test cases including subtests).</li>
+<li>The test suite also passes with the Go <b>race detector</b>, confirming that the
+    lifecycle and connection bookkeeping are concurrency-safe.</li>
+<li>The runnable demo (<span class="mono">go run ./cmd/ping</span>) prints
+    <span class="mono">Pong1</span> through <span class="mono">Pong4</span>.</li>
+<li>Only the Go standard library is used; there are no external dependencies.</li>
+</ul>
+
+<h4>Deliverables</h4>
+<table><colgroup><col style="width:22%"><col style="width:30%"><col style="width:48%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Deliverable</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Location</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Purpose</font></th></tr></thead><tbody><tr><td>RPC library</td><td><span class='mono'>lab1/rpc/rpc.go</span></td><td>Server, client, protocol types, validation, reflection invocation, lifecycle.</td></tr><tr><td>Test suite</td><td><span class='mono'>lab1/rpc/rpc_test.go</span></td><td>Provided specification; unchanged and fully passing.</td></tr><tr><td>Demo program</td><td><span class='mono'>lab1/cmd/ping/main.go</span></td><td>End-to-end usage example: starts a server, calls Ping four times.</td></tr><tr><td>Module file</td><td><span class='mono'>lab1/go.mod</span></td><td>Module <span class='mono'>lab1</span>, Go 1.20, no dependencies.</td></tr><tr><td>This report</td><td><span class='mono'>Lab1_RPC_Report.pdf</span></td><td>Design, implementation walkthrough, usage, and verification evidence.</td></tr></tbody></table>
+<h2>2. Project Layout</h2>
+<pre>lab1/
+|-- go.mod                  module lab1, Go 1.20, standard library only
+|-- cmd/
+|   `-- ping/
+|       `-- main.go         runnable client/server demo
+`-- rpc/
+    |-- rpc.go              RPC implementation (server, client, protocol, reflection)
+    `-- rpc_test.go         provided test suite (13 top-level tests)</pre>
+
+<p>The layout follows the conventional Go split between a reusable package
+(<span class="mono">rpc</span>) and an executable (<span class="mono">cmd/ping</span>).
+The library has no knowledge of <span class="mono">main</span>; the demo depends on the
+library, which keeps the package testable and reusable.</p>
+
+<h2>3. System Architecture</h2>
+
+<h3>3.1 Components</h3>
+<table><colgroup><col style="width:28%"><col style="width:72%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Component</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Responsibility</font></th></tr></thead><tbody><tr><td><span class='mono'>Server</span></td><td>Owns the receiver object, the TCP listener, and lifecycle state. Exposes exported methods.</td></tr><tr><td><span class='mono'>Server.Start</span></td><td>Creates the listener, records lifecycle state, starts the accept loop in the background.</td></tr><tr><td><span class='mono'>Server.acceptLoop</span></td><td>Accepts connections forever; each connection becomes a tracked worker goroutine.</td></tr><tr><td><span class='mono'>Server.handle</span></td><td>Reads exactly one JSON request, validates it, invokes it, writes one JSON response, closes.</td></tr><tr><td><span class='mono'>validateRequest</span></td><td>Enforces method-name, argument-count, and size limits before reflection or user code.</td></tr><tr><td><span class='mono'>Server.invoke</span></td><td>Finds the method with reflection, decodes each argument into its Go type, calls it, and normalises results.</td></tr><tr><td><span class='mono'>callMethodSafely</span></td><td>Converts a panic in user code into a normal error.</td></tr><tr><td><span class='mono'>Client.Call</span></td><td>Opens one connection per call, applies a deadline, sends one request, returns the result or remote error.</td></tr><tr><td><span class='mono'>request</span> / <span class='mono'>response</span></td><td>The JSON wire types. <span class='mono'>json.RawMessage</span> defers argument decoding until reflection knows the target type.</td></tr></tbody></table>
+<h3>3.2 Wire Protocol</h3>
+<p>Each call is one request and one response on one TCP connection. The server closes the
+connection after writing the response. The JSON field names are fixed by the assignment.</p>
+<table>
+<tr>
+<th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Request</font></th>
+<th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Successful response</font></th>
+<th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Error response</font></th>
+</tr>
+<tr>
+<td style="padding:0;vertical-align:top;"><pre style="margin:0;border:none;background-color:#f6f8fa;padding:7pt 8pt;font-size:7.6pt;">{
+  "method": "Add",
+  "args": [2, 3]
+}</pre></td>
+<td style="padding:0;vertical-align:top;"><pre style="margin:0;border:none;background-color:#f6f8fa;padding:7pt 8pt;font-size:7.6pt;">{
+  "ok": true,
+  "value": 5
+}</pre></td>
+<td style="padding:0;vertical-align:top;"><pre style="margin:0;border:none;background-color:#f6f8fa;padding:7pt 8pt;font-size:7.6pt;">{
+  "ok": false,
+  "error": "unknown method \"Missing\""
+}</pre></td>
+</tr>
+</table>
+
+<p><b>Protocol invariants.</b> The client sends exactly one request per connection and the
+server sends exactly one response before closing. There is no length header: the JSON decoder
+reads one complete, self-delimiting value. Every response carries
+<span class="mono">ok</span>; exactly one of <span class="mono">value</span> or
+<span class="mono">error</span> is meaningful.</p>
+
+<table style="width:100%;border-collapse:collapse;margin:7pt 0;"><tr><td bgcolor="#eef6ff" style="background-color:#eef6ff;border:1px solid #d0d7de;border-left:4pt solid #1f6feb;padding:6pt 9pt;">
+<b>Why JSON?</b> It is language-neutral, human-readable, and trivially debuggable with tools
+such as <span class="mono">nc</span> or a browser. The cost is a larger payload than a binary
+encoding, which is an acceptable trade-off for a teaching system where clarity matters more
+than throughput.
+</td></tr></table>
+
+<h3>3.3 End-to-End Call Sequence</h3>
+<pre class="keep">Client.Call("Add", &amp;sum, 20, 22)
+   │
+   ├─ 1. net.DialTimeout(Address, Timeout)        one fresh TCP connection
+   ├─ 2. conn.SetDeadline(now + Timeout)          bounds connect + write + read
+   ├─ 3. encode {"method":"Add","args":[20,22]}
+   ▼
+Server.acceptLoop (background goroutine, one per running server)
+   ├─ 4. listener.Accept()                        blocks until a client connects
+   ├─ 5. workers.Add(1)                           register the in-flight call
+   └─ 6. go handle(conn)                          one goroutine per connection
+   ▼
+Server.handle(conn)
+   ├─ 7. LimitReader + json.Decode                exactly one request, size-capped
+   ├─ 8. validateRequest(req)                     reject abuse before reflection
+   ├─ 9. invoke(req)
+   │       ├─ reflect.MethodByName("Add")         exported methods only
+   │       ├─ check NumIn() == len(args)
+   │       ├─ json.Unmarshal each raw arg         into the declared Go type
+   │       ├─ callMethodSafely(...)               panic becomes an error
+   │       └─ normalise return values             value / error / value+error / none
+   ├─ 10. encode {"ok":true,"value":42}
+   └─ 11. defer conn.Close()                      protocol: one call per connection
+   ▼
+Client.Call
+   ├─ 12. decode response
+   ├─ 13. ok == false  → return errors.New(server message)
+   └─ 14. ok == true   → json.Unmarshal(value, out); nil out is accepted</pre>
+
+<h2>4. Implementation Walkthrough</h2>
+<p>Each subsection states the assignment requirement, shows the essential code, and explains
+why the implementation satisfies it. Full doc comments, including usage examples, are in
+<span class="mono">rpc/rpc.go</span>.</p>
+
+<h3>4.1 Task 1 &mdash; Start the RPC Server</h3>
+<p><b>Requirement:</b> create a TCP listener, return startup errors, reject a second
+<span class="mono">Start</span>, save the listener and lifecycle state, launch the accept loop
+in a goroutine, and return without waiting for a client. Port <span class="mono">0</span>
+must let the OS choose a port.</p>
+<pre>func (s *Server) Start(address string) error {
+    s.mu.Lock()
+    defer s.mu.Unlock()
+
+    if s.listener != nil {
+        return errors.New(&quot;server already started&quot;)
+    }
+    listener, err := net.Listen(&quot;tcp&quot;, address)
+    if err != nil {
+        return err
+    }
+
+    stopped := make(chan struct{})
+    acceptDone := make(chan struct{})
+    s.listener = listener
+    s.stopped = stopped
+    s.acceptDone = acceptDone
+
+    go s.acceptLoop(listener, stopped, acceptDone)
+    return nil
+}</pre>
+<p><b>Why it works.</b> The mutex makes the "already running" check and the state update
+atomic, so two concurrent starts cannot both succeed. Fresh <span class="mono">stopped</span>
+and <span class="mono">acceptDone</span> channels are created on <i>every</i> start: channels
+cannot be closed twice, so reusing them would make a restart panic. The accept loop is passed
+the listener and channels as arguments, so it never reads mutable fields without the lock.
+Because the loop runs in a goroutine, <span class="mono">Start</span> returns immediately.
+<span class="mono">net.Listen</span> resolves <span class="mono">:0</span> to a real port,
+which is later exposed by <span class="mono">Address</span>.</p>
+
+<h3>4.2 Task 2 &mdash; Return the Server Address</h3>
+<p><b>Requirement:</b> return the actual listening address, including the OS-selected port;
+return an empty string before start and after stop; read shared state safely.</p>
+<pre>func (s *Server) Address() string {
+    s.mu.Lock()
+    defer s.mu.Unlock()
+
+    if s.listener == nil {
+        return &quot;&quot;
+    }
+    return s.listener.Addr().String()
+}</pre>
+<p><b>Why it works.</b> <span class="mono">listener.Addr()</span> reports the address the
+operating system actually bound, not the requested string, so
+<span class="mono">127.0.0.1:0</span> becomes something like
+<span class="mono">127.0.0.1:41237</span>. The mutex prevents a data race with
+<span class="mono">Start</span> and <span class="mono">Stop</span>, which mutate
+<span class="mono">s.listener</span>. A nil listener represents both "not started" and
+"stopped", so both cases correctly return <span class="mono">""</span>.</p>
+
+<h3>4.3 Task 3 &mdash; Stop the Server</h3>
+<p><b>Requirement:</b> stop accepting, close the listener, signal the accept loop, wait for the
+loop and for active handlers, leave the server restartable, and be safe before start and when
+called repeatedly.</p>
+<pre>func (s *Server) Stop() error {
+    s.mu.Lock()
+    if s.listener == nil {          // never started, already stopped, or stopping
+        s.mu.Unlock()
+        return nil
+    }
+    listener := s.listener
+    stopped := s.stopped
+    acceptDone := s.acceptDone
+
+    s.listener = nil                // Address() now returns &quot;&quot;
+    s.stopped = nil
+    s.acceptDone = nil
+    close(stopped)                  // signal the accept loop
+    s.mu.Unlock()
+
+    _ = listener.Close()            // unblocks Accept with an expected error
+    &lt;-acceptDone                    // no new workers can be added after this
+    s.workers.Wait()                // let in-flight handlers finish
+    return nil
+}</pre>
+<p><b>Why it works.</b> Clearing the listener first makes the operation idempotent: a second
+<span class="mono">Stop</span> sees nil and returns successfully. Closing
+<span class="mono">stopped</span> tells the loop to stop, while closing the listener unblocks a
+goroutine currently sleeping in <span class="mono">Accept</span>. The ordering of the two waits
+is essential: <span class="mono">acceptDone</span> is awaited before
+<span class="mono">workers.Wait</span>, so once the accept loop has exited no new
+<span class="mono">workers.Add</span> can race with <span class="mono">Wait</span>. Waiting for
+the workers means an in-flight call still finishes and receives its result
+(<span class="mono">TestStopWaitsForActiveHandler</span>). Since the state is reset, a later
+<span class="mono">Start</span> creates fresh channels and succeeds.</p>
+
+<h3>4.4 Task 4 &mdash; Validate Requests</h3>
+<p><b>Requirement:</b> reject empty or unsafe method names, more than
+<span class="mono">maxArguments</span> arguments, a single argument larger than
+<span class="mono">maxArgumentBytes</span>, or arguments totaling more than
+<span class="mono">maxRequestBytes</span>.</p>
+<pre>func validateRequest(req request) error {
+    if req.Method == &quot;&quot; {
+        return errors.New(&quot;method cannot be empty&quot;)
+    }
+    for _, character := range req.Method {
+        if unicode.IsSpace(character) || unicode.IsControl(character) {
+            return fmt.Errorf(&quot;method %q cannot contain whitespace or control characters&quot;,
+                req.Method)
+        }
+    }
+    if len(req.Args) &gt; maxArguments {
+        return fmt.Errorf(&quot;too many arguments: %d (maximum %d)&quot;, len(req.Args), maxArguments)
+    }
+
+    total := 0
+    for index, argument := range req.Args {
+        if len(argument) &gt; maxArgumentBytes {
+            return fmt.Errorf(&quot;argument %d is larger than %d bytes&quot;, index, maxArgumentBytes)
+        }
+        total += len(argument)
+    }
+    if total &gt; maxRequestBytes {
+        return fmt.Errorf(&quot;request arguments are larger than %d bytes&quot;, maxRequestBytes)
+    }
+    return nil
+}</pre>
+<p><b>Why it works.</b> Iterating over runes (not bytes) makes the whitespace/control check
+correct for non-ASCII input. The per-argument and total checks use the <i>encoded</i> lengths
+of <span class="mono">json.RawMessage</span>, which is exactly what the server would process.
+Validation runs before <span class="mono">invoke</span>, so hostile input is rejected before any
+reflection, allocation of parameter values, or application code runs. This is a small but real
+denial-of-service defence.</p>
+<table><colgroup><col style="width:30%"><col style="width:14%"><col style="width:56%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Limit</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Value</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Protects against</font></th></tr></thead><tbody><tr><td><span class='mono'>maxArguments</span></td><td>8</td><td>Calls with an unreasonable parameter count.</td></tr><tr><td><span class='mono'>maxArgumentBytes</span></td><td>1 MiB</td><td>One huge argument consuming memory.</td></tr><tr><td><span class='mono'>maxRequestBytes</span></td><td>4 MiB</td><td>Many medium arguments consuming memory.</td></tr><tr><td><span class='mono'>defaultCallTimeout</span></td><td>5 s</td><td>Clients waiting forever on a stuck server.</td></tr></tbody></table>
+<h3>4.5 Task 5 &mdash; Handle RPC Calls</h3>
+<p><b>Requirement:</b> read one JSON request, answer malformed JSON with an error, validate,
+invoke, return success or error JSON, convert method panics into errors, and close the
+connection. A bad request must neither crash the server nor leave the client waiting.</p>
+<pre>decoder := json.NewDecoder(bufio.NewReader(io.LimitReader(connection, maxRequestBytes+1)))
+var req request
+if err := decoder.Decode(&amp;req); err != nil {
+    _ = encoder.Encode(response{Error: fmt.Sprintf(&quot;invalid request: %v&quot;, err)})
+    return
+}
+if err := validateRequest(req); err != nil {
+    _ = encoder.Encode(response{Error: err.Error()})
+    return
+}
+result, err := s.invoke(req)
+if err != nil {
+    _ = encoder.Encode(response{Error: err.Error()})
+    return
+}
+payload, err := json.Marshal(result)
+if err != nil {
+    _ = encoder.Encode(response{Error: fmt.Sprintf(&quot;encode result: %v&quot;, err)})
+    return
+}
+_ = encoder.Encode(response{OK: true, Value: payload})</pre>
+<p><b>Why it works.</b> The protocol is one request per connection, so a single
+<span class="mono">Decode</span> is sufficient. <span class="mono">io.LimitReader</span> caps
+the bytes the decoder may consume; adding one byte lets an over-limit body fail during decoding
+instead of being silently truncated and accepted. Every failure path writes a JSON error
+response before returning, so the client always receives an answer. A deferred
+<span class="mono">recover</span> is kept as a final safety net, although method panics are
+already handled inside <span class="mono">callMethodSafely</span>. The deferred
+<span class="mono">connection.Close()</span> guarantees the socket is released.</p>
+
+<h3>4.6 Task 6 &mdash; Invoke Methods with Reflection</h3>
+<p><b>Requirement:</b> find the exported method, error clearly when it is missing, check the
+argument count, decode each JSON argument into the parameter type, call the method, support
+all required return shapes, surface non-nil errors, and convert panics into errors.</p>
+<pre>method := reflect.ValueOf(s.receiver).MethodByName(req.Method)
+if !method.IsValid() {
+    return nil, fmt.Errorf(&quot;unknown method %q&quot;, req.Method)
+}
+typeOfMethod := method.Type()
+if typeOfMethod.NumIn() != len(req.Args) {
+    return nil, fmt.Errorf(&quot;method %q expects %d arguments, got %d&quot;,
+        req.Method, typeOfMethod.NumIn(), len(req.Args))
+}
+
+arguments := make([]reflect.Value, len(req.Args))
+for index, raw := range req.Args {
+    argument := reflect.New(typeOfMethod.In(index))   // *T
+    if err := json.Unmarshal(raw, argument.Interface()); err != nil {
+        return nil, fmt.Errorf(&quot;argument %d: %v&quot;, index, err)
+    }
+    arguments[index] = argument.Elem()                // T
+}
+
+outputs, err := callMethodSafely(method, arguments)
+if err != nil {
+    return nil, err
+}
+
+errorType := reflect.TypeOf((*error)(nil)).Elem()
+if last := outputs[len(outputs)-1]; last.Type().Implements(errorType) {
+    if !isNilValue(last) {
+        return nil, last.Interface().(error)
+    }
+    outputs = outputs[:len(outputs)-1]
+}
+if len(outputs) == 0 {
+    return nil, nil
+}
+return outputs[0].Interface(), nil</pre>
+<p><b>Why it works.</b> <span class="mono">MethodByName</span> only returns exported methods,
+so the server cannot accidentally expose private helpers. For a bound method value,
+<span class="mono">NumIn()</span> counts only declared parameters (the receiver is already
+bound). <span class="mono">reflect.New(T)</span> gives a <span class="mono">*T</span> that
+<span class="mono">json.Unmarshal</span> can fill; <span class="mono">Elem()</span> then yields
+the <span class="mono">T</span> that <span class="mono">Call</span> expects. Handling the last
+return value separately supports all required shapes:</p>
+<table class="keep"><colgroup><col style="width:38%"><col style="width:20%"><col style="width:42%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Method shape</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Reflection outputs</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Response</font></th></tr></thead><tbody><tr><td><span class='mono'>NoResult()</span></td><td>0 values</td><td><span class='mono'>ok:true</span>, no value</td></tr><tr><td><span class='mono'>NoArgs() string</span></td><td>1 value</td><td>value</td></tr><tr><td><span class='mono'>Add(int,int) int</span></td><td>1 value</td><td>value</td></tr><tr><td><span class='mono'>OnlyError(bool) error</span></td><td>1 error</td><td>nil error → no value; non-nil → error</td></tr><tr><td><span class='mono'>Ping(int) (string, error)</span></td><td>value + error</td><td>error if non-nil, else value</td></tr></tbody></table>
+<p><span class="mono">callMethodSafely</span> recovers a panic and returns it as an ordinary
+error. Without it, a buggy remote method would unwind through the handler and could terminate
+the process. <span class="mono">isNilValue</span> checks nilable kinds before calling
+<span class="mono">IsNil</span>, which would panic on an integer or string.</p>
+
+<h3>4.7 Task 7 &mdash; Implement the RPC Client</h3>
+<p><b>Requirement:</b> reject an empty method name, open one connection, apply the timeout as a
+connection and I/O deadline, encode one request, decode one response, return remote errors,
+decode the value into <span class="mono">out</span> (accepting nil), close the connection, and
+produce useful errors.</p>
+<pre>if method == &quot;&quot; {
+    return errors.New(&quot;method cannot be empty&quot;)
+}
+encodedArgs := make([]json.RawMessage, len(args))
+for index, argument := range args {
+    raw, err := json.Marshal(argument)
+    if err != nil {
+        return fmt.Errorf(&quot;encode argument %d: %w&quot;, index, err)
+    }
+    encodedArgs[index] = raw
+}
+
+server, err := net.DialTimeout(&quot;tcp&quot;, c.Address, timeout)
+if err != nil {
+    return fmt.Errorf(&quot;connect to %s: %w&quot;, c.Address, err)
+}
+defer server.Close()
+if err := server.SetDeadline(time.Now().Add(timeout)); err != nil {
+    return fmt.Errorf(&quot;set deadline: %w&quot;, err)
+}
+
+if err := json.NewEncoder(server).Encode(request{Method: method, Args: encodedArgs}); err != nil {
+    return fmt.Errorf(&quot;encode request: %w&quot;, err)
+}
+var remote response
+if err := json.NewDecoder(bufio.NewReader(server)).Decode(&amp;remote); err != nil {
+    return fmt.Errorf(&quot;decode response: %w&quot;, err)
+}
+if !remote.OK {
+    return errors.New(remote.Error)
+}
+if out == nil {
+    return nil
+}
+if err := json.Unmarshal(remote.Value, out); err != nil {
+    return fmt.Errorf(&quot;decode response value: %w&quot;, err)
+}
+return nil</pre>
+<p><b>Why it works.</b> Marshalling each argument separately produces the exact
+<span class="mono">[]json.RawMessage</span> the protocol expects; the server needs the raw bytes
+because only it knows the parameter types. <span class="mono">DialTimeout</span> bounds
+connection setup and <span class="mono">SetDeadline</span> bounds the later write and read, so
+a slow method cannot block the caller forever (<span class="mono">TestClientTimeout</span>).
+A response with <span class="mono">ok:false</span> becomes a local error carrying the server's
+message, which is how remote method errors reach the caller. Passing
+<span class="mono">nil</span> for <span class="mono">out</span> is valid for methods with no
+result. Decode failures are wrapped so the caller can tell an output-type problem from a
+network problem. The deferred close releases the socket on every path.</p>
+
+<h2>5. Concurrency and Lifecycle Design</h2>
+
+<p>Three standard-library primitives cooperate to make the server safe under concurrent calls
+and clean shutdown:</p>
+<table><colgroup><col style="width:22%"><col style="width:26%"><col style="width:52%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Primitive</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Where</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Why</font></th></tr></thead><tbody><tr><td><span class='mono'>sync.Mutex</span></td><td><span class='mono'>Server.mu</span></td><td>Protects <span class='mono'>listener</span>, <span class='mono'>stopped</span>, and <span class='mono'>acceptDone</span> from concurrent Start/Stop/Address. It is never held while waiting for a handler, so a slow call cannot block status queries.</td></tr><tr><td><span class='mono'>sync.WaitGroup</span></td><td><span class='mono'>Server.workers</span></td><td>Counts connection handlers. <span class='mono'>Stop</span> waits until every in-flight call has finished.</td></tr><tr><td>Channels</td><td><span class='mono'>stopped</span>, <span class='mono'>acceptDone</span></td><td><span class='mono'>stopped</span> signals shutdown; <span class='mono'>acceptDone</span> confirms the accept loop exited. Closing channels broadcasts to all waiters without polling.</td></tr></tbody></table>
+<h4>Shutdown ordering</h4>
+<ol>
+<li>Acquire the mutex, verify the server is running, and snapshot the listener and channels.</li>
+<li>Clear the lifecycle fields so a repeat <span class="mono">Stop</span> is a no-op.</li>
+<li>Close <span class="mono">stopped</span> to signal the accept loop, then release the mutex.</li>
+<li>Close the listener. A blocked <span class="mono">Accept</span> returns an error and the loop exits.</li>
+<li>Wait for <span class="mono">acceptDone</span>. At this point no new worker can be registered.</li>
+<li>Wait for <span class="mono">workers</span>. Existing calls finish normally and receive their responses.</li>
+</ol>
+
+<table style="width:100%;border-collapse:collapse;margin:7pt 0;"><tr><td bgcolor="#eef6ff" style="background-color:#eef6ff;border:1px solid #d0d7de;border-left:4pt solid #1f6feb;padding:6pt 9pt;">
+<b>Why the wait order matters.</b> If <span class="mono">workers.Wait()</span> ran first, the
+accept loop could call <span class="mono">Add</span> while a wait was already in progress. Go
+forbids adding to a WaitGroup that is being waited on when the counter is zero. Waiting for
+<span class="mono">acceptDone</span> first establishes the invariant that all
+<span class="mono">Add</span> calls have already happened.
+</td></tr></table>
+
+<p><b>Restart safety.</b> <span class="mono">Start</span> creates new channels and a new
+listener on every run. The only state that survives is the receiver object and the
+<span class="mono">WaitGroup</span>, whose counter is guaranteed to be zero after
+<span class="mono">Stop</span>. This is why <span class="mono">TestStopAndRestart</span>
+passes.</p>
+
+<p><b>Race freedom.</b> <span class="mono">go test -race ./...</span> reports no data races.
+The mutex covers every read and write of the lifecycle fields, and the accept loop receives its
+listener and channels as immutable arguments.</p>
+
+<h2>6. Robustness and Security</h2>
+<p>The server treats every byte from the network as untrusted. The table below maps each
+failure mode to the mechanism that handles it.</p>
+<table><colgroup><col style="width:27%"><col style="width:40%"><col style="width:33%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Failure / attack</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Mechanism</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Result</font></th></tr></thead><tbody><tr><td>Malformed JSON</td><td>Decode error path in <span class='mono'>handle</span></td><td>JSON error response; connection closed.</td></tr><tr><td>Empty or unsafe method name</td><td><span class='mono'>validateRequest</span></td><td>Error response before reflection.</td></tr><tr><td>Too many arguments</td><td><span class='mono'>maxArguments</span> check</td><td>Error response; no allocation of parameters.</td></tr><tr><td>Oversized argument or request</td><td><span class='mono'>maxArgumentBytes</span>, <span class='mono'>maxRequestBytes</span>, <span class='mono'>LimitReader</span></td><td>Error response; memory use bounded.</td></tr><tr><td>Wrong JSON type for a parameter</td><td><span class='mono'>json.Unmarshal</span> error in <span class='mono'>invoke</span></td><td>Error naming the argument index.</td></tr><tr><td>Unknown or unexported method</td><td><span class='mono'>MethodByName</span> validity check</td><td><span class='mono'>unknown method</span> error.</td></tr><tr><td>Remote method returns an error</td><td>Final-error handling in <span class='mono'>invoke</span></td><td>Client receives the error text.</td></tr><tr><td>Remote method panics</td><td><span class='mono'>callMethodSafely</span> recover</td><td>Error response; server stays alive.</td></tr><tr><td>Slow or stuck method</td><td>Client <span class='mono'>SetDeadline</span></td><td>Client times out; server shutdown still waits for the handler.</td></tr><tr><td>Duplicate Start / repeated Stop</td><td>State checks under <span class='mono'>mu</span></td><td>Clear error or idempotent success.</td></tr><tr><td>Shutdown during a call</td><td><span class='mono'>workers.Wait</span></td><td>In-flight call completes before Stop returns.</td></tr></tbody></table>
+<table style="width:100%;border-collapse:collapse;margin:7pt 0;"><tr><td bgcolor="#fff8e6" style="background-color:#fff8e6;border:1px solid #d0d7de;border-left:4pt solid #d4a72c;padding:6pt 9pt;">
+<b>Defence in depth.</b> Validation and the read limit overlap intentionally. The
+<span class="mono">LimitReader</span> protects the process regardless of how the request is
+parsed, while <span class="mono">validateRequest</span> produces precise, user-facing errors
+for limit violations. Panic recovery is a third layer: even a bug the validation cannot predict
+does not take down the server.
+</td></tr></table>
+
+<h2>7. Testing and Verification</h2>
+<p>The provided suite in <span class="mono">rpc/rpc_test.go</span> is the specification. It was
+not modified. Run it from the module root:</p>
+<pre>cd lab1
+go test ./...
+go test -race ./...</pre>
+<h3>7.1 Test Matrix</h3>
+<table><colgroup><col style="width:36%"><col style="width:64%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Test</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">What it proves</font></th></tr></thead><tbody><tr><td><span class='mono'>TestValidateRequest</span></td><td>Empty method, whitespace, control characters, too many arguments, one large argument, and an oversized total are all rejected; valid requests pass.</td></tr><tr><td><span class='mono'>TestServerClient</span></td><td>Basic Add and Ping round trips; a remote error from Ping(-1) reaches the client.</td></tr><tr><td><span class='mono'>TestServerClientMethodShapes</span></td><td>Zero arguments, no result, one value, and error-only methods all work.</td></tr><tr><td><span class='mono'>TestInvalidRemoteCallsBecomeErrors</span></td><td>Unknown method, wrong argument count, wrong JSON argument type, and an output type that cannot hold the result each produce an error.</td></tr><tr><td><span class='mono'>TestRemotePanicBecomesError</span></td><td>A panicking method returns an error containing "panicked"; the server survives.</td></tr><tr><td><span class='mono'>TestConcurrentCalls</span></td><td>Twenty concurrent calls complete without interference.</td></tr><tr><td><span class='mono'>TestStopAndRestart</span></td><td>Address is empty after Stop; Start works again afterwards.</td></tr><tr><td><span class='mono'>TestServerLifecycleErrors</span></td><td>Address before Start is empty; Stop before Start succeeds; duplicate Start fails; double Stop succeeds.</td></tr><tr><td><span class='mono'>TestStopWaitsForActiveHandler</span></td><td>Stop blocks until a 150 ms handler finishes, and the call still succeeds.</td></tr><tr><td><span class='mono'>TestClientTimeout</span></td><td>A 20 ms client timeout fails against a 150 ms method instead of hanging.</td></tr><tr><td><span class='mono'>TestClientConnectionFailures</span></td><td>An unavailable server produces a connection error.</td></tr><tr><td><span class='mono'>TestMalformedRequestGetsErrorResponse</span></td><td>Raw "not json" receives a JSON error response.</td></tr><tr><td><span class='mono'>TestOversizedRequestGetsErrorResponse</span></td><td>A request with a ~1 MiB argument receives an error response.</td></tr></tbody></table>
+<h3>7.2 Results</h3>
+<pre>PASS
+ok      lab1/rpc    0.318s
+
+$ go test -race ./...
+?       lab1/cmd/ping    [no test files]
+ok      lab1/rpc        1.398s</pre>
+<p class="small">Environment: Go 1.23.4 linux/amd64. The module targets Go 1.20 and uses only
+the standard library.</p>
+
+<h3>7.3 Demo Run</h3>
+<pre>$ go run ./cmd/ping
+Pong1
+Pong2
+Pong3
+Pong4</pre>
+<p>The demo is an end-to-end check: it starts a real TCP server on an OS-selected port, creates
+a client from <span class="mono">Server.Address()</span>, and performs four remote calls.</p>
+
+<h2>8. Usage Guide</h2>
+
+<h3>8.1 Prerequisites</h3>
+<ul>
+<li>Go 1.20 or newer available on the <span class="mono">PATH</span> (<span class="mono">go version</span>).</li>
+<li>No external modules: the implementation only imports the standard library.</li>
+</ul>
+
+<h3>8.2 Run the Demo</h3>
+<pre>cd lab1
+go run ./cmd/ping</pre>
+<p>Expected output:</p>
+<pre>Pong1
+Pong2
+Pong3
+Pong4</pre>
+
+<h3>8.3 Use the Library</h3>
+<p><b>Server side.</b> Define a pointer receiver with exported methods. Any
+<span class="mono">func</span> shape listed in the assignment is supported automatically.</p>
+<pre>package main
+
+import (
+    &quot;log&quot;
+    &quot;lab1/rpc&quot;
+)
+
+type Calculator struct{}
+
+func (*Calculator) Add(left, right int) int { return left + right }
+func (*Calculator) Echo(value string) string { return value }
+
+func main() {
+    server, err := rpc.NewServer(&amp;Calculator{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    if err := server.Start(&quot;127.0.0.1:0&quot;); err != nil {   // port 0 = OS chooses
+        log.Fatal(err)
+    }
+    defer server.Stop()
+
+    log.Println(&quot;listening on&quot;, server.Address())
+    select {}   // keep the process alive
+}</pre>
+<p><b>Client side.</b> Create a client with the server address and call methods by name. Pass a
+pointer as <span class="mono">out</span> to receive a result, or <span class="mono">nil</span>
+when the method has no result.</p>
+<pre>client, err := rpc.NewClient(server.Address())
+if err != nil {
+    log.Fatal(err)
+}
+
+var sum int
+if err := client.Call(&quot;Add&quot;, &amp;sum, 20, 22); err != nil {
+    log.Fatal(err)
+}
+log.Println(&quot;20 + 22 =&quot;, sum)          // 42
+
+var echoed string
+if err := client.Call(&quot;Echo&quot;, &amp;echoed, &quot;hello&quot;); err != nil {
+    log.Fatal(err)
+}
+log.Println(echoed)                    // hello
+
+if err := client.Call(&quot;NoResult&quot;, nil); err != nil {   // nil out
+    log.Fatal(err)
+}</pre>
+<h3>8.4 Protocol-Level Usage</h3>
+<p>Because the protocol is plain JSON over TCP, any language can call the server. A raw request
+looks like this:</p>
+<pre>{"method":"Add","args":[2,3]}
+{"ok":true,"value":5}
+
+{"method":"Missing","args":[]}
+{"ok":false,"error":"unknown method \"Missing\""}</pre>
+
+<h3>8.5 Running the Tests</h3>
+<pre>cd lab1
+go test ./...            # functional tests
+go test -race ./...      # concurrency safety
+go test -run TestStop -v # a focused subset</pre>
+
+<h2>9. Design Decisions and Trade-offs</h2>
+<table><colgroup><col style="width:24%"><col style="width:40%"><col style="width:36%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Decision</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Benefit</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Trade-off</font></th></tr></thead><tbody><tr><td>One request per TCP connection</td><td>Trivial framing (one JSON value), no multiplexing state, each call gets its own deadline, and a Client is safe for concurrent use.</td><td>A new connection per call adds handshake overhead; unsuitable for very high call rates without a connection pool.</td></tr><tr><td>JSON wire format</td><td>Human-readable, language-neutral, easy to debug with <span class='mono'>nc</span> or a browser, and directly supported by Go.</td><td>Larger and slower than a binary format; numbers lose exactness for very large integers unless encoded as strings.</td></tr><tr><td>Reflection-based dispatch</td><td>One generic server works for any receiver; no generated code or registration boilerplate.</td><td>Lookups and calls are slower than direct calls; errors are discovered at runtime rather than compile time.</td></tr><tr><td>Fixed size limits</td><td>Bounded memory use and a simple, predictable denial-of-service defence.</td><td>Legitimate payloads above 1 MiB per argument or 4 MiB total are rejected.</td></tr><tr><td>Recover panics into errors</td><td>One faulty method cannot crash the server or drop other clients.</td><td>A panic becomes a client-visible error; operators should still log it for diagnosis.</td></tr><tr><td>Port 0 in tests and demos</td><td>The OS picks a free port, so tests never collide and can run in parallel.</td><td>The chosen port is only known at runtime, so callers must use <span class='mono'>Address()</span>.</td></tr><tr><td>Clear state before waiting in Stop</td><td><span class='mono'>Stop</span> is idempotent and a restart sees a clean server.</td><td>A concurrent <span class='mono'>Start</span> during <span class='mono'>Stop</span> is not supported; callers should treat the pair as sequential.</td></tr></tbody></table>
+<h2>10. Requirements Checklist</h2>
+<table><colgroup><col style="width:45%"><col style="width:14%"><col style="width:41%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Requirement from the handout</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Status</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Evidence</font></th></tr></thead><tbody><tr><td>TCP client-server application</td><td><span class='status-pass'>Done</span></td><td><span class='mono'>net.Listen</span>, <span class='mono'>net.DialTimeout</span></td></tr><tr><td>JSON request/response encoding</td><td><span class='status-pass'>Done</span></td><td><span class='mono'>encoding/json</span>, fixed field names</td></tr><tr><td>Concurrent client handling</td><td><span class='status-pass'>Done</span></td><td>goroutine per connection, <span class='mono'>TestConcurrentCalls</span></td></tr><tr><td>Safe start and stop</td><td><span class='status-pass'>Done</span></td><td>mutex, channels, WaitGroup; lifecycle tests</td></tr><tr><td>Discover the OS-selected port</td><td><span class='status-pass'>Done</span></td><td><span class='mono'>Address()</span> after port 0</td></tr><tr><td>Validate requests before execution</td><td><span class='status-pass'>Done</span></td><td><span class='mono'>validateRequest</span>; 6 validation tests</td></tr><tr><td>Convert JSON arguments to Go values</td><td><span class='status-pass'>Done</span></td><td><span class='mono'>reflect.New</span> + <span class='mono'>json.Unmarshal</span></td></tr><tr><td>Invoke methods via reflection</td><td><span class='status-pass'>Done</span></td><td><span class='mono'>MethodByName</span> + <span class='mono'>Call</span></td></tr><tr><td>Return remote errors without crashing</td><td><span class='status-pass'>Done</span></td><td>error return handling + recover</td></tr><tr><td>Write and run network tests</td><td><span class='status-pass'>Done</span></td><td>13/13 tests pass, race detector clean</td></tr><tr><td>Keep signatures and JSON names</td><td><span class='status-pass'>Done</span></td><td>no signature or struct tag changes</td></tr><tr><td>Keep TODO comments</td><td><span class='status-pass'>Done</span></td><td>all seven TODO blocks preserved</td></tr></tbody></table>
+<h2>Appendix A &mdash; API Reference</h2>
+<table><colgroup><col style="width:22%"><col style="width:50%"><col style="width:28%"></colgroup><thead><tr><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Symbol</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Signature</font></th><th bgcolor="#0f2a43" style="background-color:#0f2a43;color:#ffffff;text-align:left;padding:4pt 5pt;border:1px solid #0f2a43;font-size:9pt;"><font color="#ffffff">Purpose</font></th></tr></thead><tbody><tr><td><span class='mono'>NewServer</span></td><td><span class='mono'>func NewServer(receiver any) (*Server, error)</span></td><td>Validate a non-nil pointer receiver.</td></tr><tr><td><span class='mono'>Server.Start</span></td><td><span class='mono'>func (s *Server) Start(address string) error</span></td><td>Bind, record state, launch the accept loop.</td></tr><tr><td><span class='mono'>Server.Address</span></td><td><span class='mono'>func (s *Server) Address() string</span></td><td>Actual listening address, or empty.</td></tr><tr><td><span class='mono'>Server.Stop</span></td><td><span class='mono'>func (s *Server) Stop() error</span></td><td>Stop accepting and wait for active calls.</td></tr><tr><td><span class='mono'>Server.handle</span></td><td><span class='mono'>func (s *Server) handle(connection net.Conn)</span></td><td>One request in, one response out.</td></tr><tr><td><span class='mono'>validateRequest</span></td><td><span class='mono'>func validateRequest(req request) error</span></td><td>Enforce protocol limits.</td></tr><tr><td><span class='mono'>Server.invoke</span></td><td><span class='mono'>func (s *Server) invoke(req request) (any, error)</span></td><td>Reflection lookup, typed decoding, call, result normalisation.</td></tr><tr><td><span class='mono'>callMethodSafely</span></td><td><span class='mono'>func callMethodSafely(method reflect.Value, arguments []reflect.Value) ([]reflect.Value, error)</span></td><td>Call a method and recover panics.</td></tr><tr><td><span class='mono'>isNilValue</span></td><td><span class='mono'>func isNilValue(value reflect.Value) bool</span></td><td>Nil check that is safe for all kinds.</td></tr><tr><td><span class='mono'>NewClient</span></td><td><span class='mono'>func NewClient(address string) (*Client, error)</span></td><td>Create a client with the default timeout.</td></tr><tr><td><span class='mono'>Client.Call</span></td><td><span class='mono'>func (c *Client) Call(method string, out any, args ...any) error</span></td><td>Perform one remote call.</td></tr></tbody></table>
+<h2 class="newpage">Appendix B &mdash; Full Test Output</h2>
+<pre style='font-size:7.1pt;'>?   	lab1/cmd/ping	[no test files]
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/empty_method
+=== RUN   TestValidateRequest/space_in_method
+=== RUN   TestValidateRequest/control_character
+=== RUN   TestValidateRequest/too_many_arguments
+=== RUN   TestValidateRequest/large_argument
+=== RUN   TestValidateRequest/large_request
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/empty_method (0.00s)
+    --- PASS: TestValidateRequest/space_in_method (0.00s)
+    --- PASS: TestValidateRequest/control_character (0.00s)
+    --- PASS: TestValidateRequest/too_many_arguments (0.00s)
+    --- PASS: TestValidateRequest/large_argument (0.00s)
+    --- PASS: TestValidateRequest/large_request (0.00s)
+=== RUN   TestServerClient
+--- PASS: TestServerClient (0.00s)
+=== RUN   TestServerClientMethodShapes
+--- PASS: TestServerClientMethodShapes (0.00s)
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/unknown_method
+=== RUN   TestInvalidRemoteCallsBecomeErrors/wrong_argument_count
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_output_type
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/unknown_method (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/wrong_argument_count (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_output_type (0.00s)
+=== RUN   TestRemotePanicBecomesError
+--- PASS: TestRemotePanicBecomesError (0.00s)
+=== RUN   TestConcurrentCalls
+--- PASS: TestConcurrentCalls (0.00s)
+=== RUN   TestStopAndRestart
+--- PASS: TestStopAndRestart (0.00s)
+=== RUN   TestServerLifecycleErrors
+--- PASS: TestServerLifecycleErrors (0.00s)
+=== RUN   TestStopWaitsForActiveHandler
+--- PASS: TestStopWaitsForActiveHandler (0.15s)
+=== RUN   TestClientTimeout
+--- PASS: TestClientTimeout (0.15s)
+=== RUN   TestClientConnectionFailures
+--- PASS: TestClientConnectionFailures (0.00s)
+=== RUN   TestMalformedRequestGetsErrorResponse
+--- PASS: TestMalformedRequestGetsErrorResponse (0.00s)
+=== RUN   TestOversizedRequestGetsErrorResponse
+--- PASS: TestOversizedRequestGetsErrorResponse (0.01s)
+PASS
+ok  	lab1/rpc	0.318s</pre>
+<p class="small" style="margin-top:14pt;border-top:1px solid #d0d7de;padding-top:6pt;">
+Lab 1 &mdash; Reflection-Based RPC System &nbsp;|&nbsp; 00304N Distributed Processing &nbsp;|&nbsp;
+Alexandria National University, College of Computing &nbsp;|&nbsp; October 20, 2026
+</p>
+</body></html>

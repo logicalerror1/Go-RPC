@@ -1,0 +1,98 @@
+
+########## TestValidateRequest ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/empty_method
+=== RUN   TestValidateRequest/space_in_method
+=== RUN   TestValidateRequest/control_character
+=== RUN   TestValidateRequest/too_many_arguments
+=== RUN   TestValidateRequest/large_argument
+=== RUN   TestValidateRequest/large_request
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/empty_method (0.00s)
+    --- PASS: TestValidateRequest/space_in_method (0.00s)
+    --- PASS: TestValidateRequest/control_character (0.00s)
+    --- PASS: TestValidateRequest/too_many_arguments (0.00s)
+    --- PASS: TestValidateRequest/large_argument (0.00s)
+    --- PASS: TestValidateRequest/large_request (0.00s)
+PASS
+ok  	lab1/rpc	0.004s
+
+########## TestServerClient ##########
+=== RUN   TestServerClient
+--- PASS: TestServerClient (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestServerClientMethodShapes ##########
+=== RUN   TestServerClientMethodShapes
+--- PASS: TestServerClientMethodShapes (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestInvalidRemoteCallsBecomeErrors ##########
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/unknown_method
+=== RUN   TestInvalidRemoteCallsBecomeErrors/wrong_argument_count
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_output_type
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/unknown_method (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/wrong_argument_count (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_output_type (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestRemotePanicBecomesError ##########
+=== RUN   TestRemotePanicBecomesError
+--- PASS: TestRemotePanicBecomesError (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestConcurrentCalls ##########
+=== RUN   TestConcurrentCalls
+--- PASS: TestConcurrentCalls (0.00s)
+PASS
+ok  	lab1/rpc	0.004s
+
+########## TestStopAndRestart ##########
+=== RUN   TestStopAndRestart
+--- PASS: TestStopAndRestart (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestServerLifecycleErrors ##########
+=== RUN   TestServerLifecycleErrors
+--- PASS: TestServerLifecycleErrors (0.00s)
+PASS
+ok  	lab1/rpc	0.002s
+
+########## TestStopWaitsForActiveHandler ##########
+=== RUN   TestStopWaitsForActiveHandler
+--- PASS: TestStopWaitsForActiveHandler (0.15s)
+PASS
+ok  	lab1/rpc	0.154s
+
+########## TestClientTimeout ##########
+=== RUN   TestClientTimeout
+--- PASS: TestClientTimeout (0.15s)
+PASS
+ok  	lab1/rpc	0.155s
+
+########## TestClientConnectionFailures ##########
+=== RUN   TestClientConnectionFailures
+--- PASS: TestClientConnectionFailures (0.00s)
+PASS
+ok  	lab1/rpc	0.002s
+
+########## TestMalformedRequestGetsErrorResponse ##########
+=== RUN   TestMalformedRequestGetsErrorResponse
+--- PASS: TestMalformedRequestGetsErrorResponse (0.00s)
+PASS
+ok  	lab1/rpc	0.002s
+
+########## TestOversizedRequestGetsErrorResponse ##########
+=== RUN   TestOversizedRequestGetsErrorResponse
+--- PASS: TestOversizedRequestGetsErrorResponse (0.01s)
+PASS
+ok  	lab1/rpc	0.009s

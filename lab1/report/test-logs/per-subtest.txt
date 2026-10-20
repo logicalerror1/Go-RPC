@@ -1,0 +1,80 @@
+
+########## TestValidateRequest/empty_method ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/empty_method
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/empty_method (0.00s)
+PASS
+ok  	lab1/rpc	0.004s
+
+########## TestValidateRequest/space_in_method ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/space_in_method
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/space_in_method (0.00s)
+PASS
+ok  	lab1/rpc	0.005s
+
+########## TestValidateRequest/control_character ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/control_character
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/control_character (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestValidateRequest/too_many_arguments ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/too_many_arguments
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/too_many_arguments (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestValidateRequest/large_argument ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/large_argument
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/large_argument (0.00s)
+PASS
+ok  	lab1/rpc	0.002s
+
+########## TestValidateRequest/large_request ##########
+=== RUN   TestValidateRequest
+=== RUN   TestValidateRequest/large_request
+--- PASS: TestValidateRequest (0.00s)
+    --- PASS: TestValidateRequest/large_request (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestInvalidRemoteCallsBecomeErrors/unknown_method ##########
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/unknown_method
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/unknown_method (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestInvalidRemoteCallsBecomeErrors/wrong_argument_count ##########
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/wrong_argument_count
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/wrong_argument_count (0.00s)
+PASS
+ok  	lab1/rpc	0.003s
+
+########## TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type ##########
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_argument_JSON_type (0.00s)
+PASS
+ok  	lab1/rpc	0.004s
+
+########## TestInvalidRemoteCallsBecomeErrors/invalid_output_type ##########
+=== RUN   TestInvalidRemoteCallsBecomeErrors
+=== RUN   TestInvalidRemoteCallsBecomeErrors/invalid_output_type
+--- PASS: TestInvalidRemoteCallsBecomeErrors (0.00s)
+    --- PASS: TestInvalidRemoteCallsBecomeErrors/invalid_output_type (0.00s)
+PASS
+ok  	lab1/rpc	0.002s
